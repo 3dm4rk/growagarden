@@ -92,6 +92,11 @@
             color: white;
         }
         
+        #bugEggsBtn {
+            background: linear-gradient(45deg, #e74c3c, #ff7675);
+            color: white;
+        }
+        
         button:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(0,0,0,0.3);
@@ -192,12 +197,12 @@
             transition: all 0.3s ease;
         }
         
-        #drawSeed1xBtn, #drawEgg1xBtn {
+        #drawSeed1xBtn, #drawEgg1xBtn, #drawBugEgg1xBtn {
             background: linear-gradient(45deg, var(--primary), var(--secondary));
             color: white;
         }
         
-        #drawSeed10xBtn, #drawEgg10xBtn {
+        #drawSeed10xBtn, #drawEgg10xBtn, #drawBugEgg10xBtn {
             background: linear-gradient(45deg, var(--warning), #e17055);
             color: var(--dark);
         }
@@ -420,6 +425,7 @@
     <div class="button-container">
         <button id="seedsBtn">🌱 Seeds</button>
         <button id="eggsBtn">🥚 Eggs</button>
+        <button id="bugEggsBtn">🐞 Bug Eggs</button>
     </div>
     
     <div id="seedInfo" class="info-container">
@@ -503,6 +509,39 @@
         </div>
     </div>
     
+    <div id="bugEggInfo" class="info-container">
+        <h2>🐞 Bug Egg Pack!</h2>
+        <p>Hatch fascinating insects with different rarities:</p>
+        
+        <div class="probabilities">
+            <div class="probability-item rarity-rare">
+                <span class="probability-name">Snail</span>
+                <span class="probability-value">40%</span>
+            </div>
+            <div class="probability-item rarity-mythical">
+                <span class="probability-name">Giant Ant</span>
+                <span class="probability-value">30%</span>
+            </div>
+            <div class="probability-item rarity-mythical">
+                <span class="probability-name">Caterpillar</span>
+                <span class="probability-value">25%</span>
+            </div>
+            <div class="probability-item rarity-mythical">
+                <span class="probability-name">Praying Mantis</span>
+                <span class="probability-value">4%</span>
+            </div>
+            <div class="probability-item rarity-divine">
+                <span class="probability-name">Dragonfly</span>
+                <span class="probability-value">1%</span>
+            </div>
+        </div>
+        
+        <div class="draw-buttons">
+            <button id="drawBugEgg1xBtn" class="draw-btn">Draw 1x</button>
+            <button id="drawBugEgg10xBtn" class="draw-btn">Draw 10x</button>
+        </div>
+    </div>
+    
     <div id="resultModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -541,15 +580,28 @@
             { name: "Racoon", probability: 1, rarity: "divine" }
         ];
         
+        // Bug Egg probabilities
+        const bugEggProbabilities = [
+            { name: "Snail", probability: 40, rarity: "rare" },
+            { name: "Giant Ant", probability: 30, rarity: "mythical" },
+            { name: "Caterpillar", probability: 25, rarity: "mythical" },
+            { name: "Praying Mantis", probability: 4, rarity: "mythical" },
+            { name: "Dragonfly", probability: 1, rarity: "divine" }
+        ];
+        
         // DOM elements
         const seedsBtn = document.getElementById('seedsBtn');
         const eggsBtn = document.getElementById('eggsBtn');
+        const bugEggsBtn = document.getElementById('bugEggsBtn');
         const seedInfo = document.getElementById('seedInfo');
         const eggInfo = document.getElementById('eggInfo');
+        const bugEggInfo = document.getElementById('bugEggInfo');
         const drawSeed1xBtn = document.getElementById('drawSeed1xBtn');
         const drawSeed10xBtn = document.getElementById('drawSeed10xBtn');
         const drawEgg1xBtn = document.getElementById('drawEgg1xBtn');
         const drawEgg10xBtn = document.getElementById('drawEgg10xBtn');
+        const drawBugEgg1xBtn = document.getElementById('drawBugEgg1xBtn');
+        const drawBugEgg10xBtn = document.getElementById('drawBugEgg10xBtn');
         const resultModal = document.getElementById('resultModal');
         const modalTitle = document.getElementById('modalTitle');
         const modalResults = document.getElementById('modalResults');
@@ -558,14 +610,23 @@
         // Event listeners
         seedsBtn.addEventListener('click', () => {
             eggInfo.style.display = 'none';
+            bugEggInfo.style.display = 'none';
             seedInfo.style.display = 'block';
             createParticles(seedsBtn, 10, ['#55efc4', '#00b894']);
         });
         
         eggsBtn.addEventListener('click', () => {
             seedInfo.style.display = 'none';
+            bugEggInfo.style.display = 'none';
             eggInfo.style.display = 'block';
             createParticles(eggsBtn, 10, ['#74b9ff', '#0984e3']);
+        });
+        
+        bugEggsBtn.addEventListener('click', () => {
+            seedInfo.style.display = 'none';
+            eggInfo.style.display = 'none';
+            bugEggInfo.style.display = 'block';
+            createParticles(bugEggsBtn, 10, ['#ff7675', '#e74c3c']);
         });
         
         drawSeed1xBtn.addEventListener('click', () => {
@@ -603,6 +664,25 @@
                     results.push(drawItem(eggProbabilities));
                 }
                 showResults(results, "Results of 10x Egg Draw");
+            }, 500);
+        });
+        
+        drawBugEgg1xBtn.addEventListener('click', () => {
+            createParticles(drawBugEgg1xBtn, 15, ['#6C5CE7', '#00CEFF']);
+            setTimeout(() => {
+                const result = drawItem(bugEggProbabilities);
+                showResults([result], "Result of 1x Bug Egg Draw");
+            }, 300);
+        });
+        
+        drawBugEgg10xBtn.addEventListener('click', () => {
+            createParticles(drawBugEgg10xBtn, 30, ['#FDCB6E', '#e17055']);
+            setTimeout(() => {
+                const results = [];
+                for (let i = 0; i < 10; i++) {
+                    results.push(drawItem(bugEggProbabilities));
+                }
+                showResults(results, "Results of 10x Bug Egg Draw");
             }, 500);
         });
         
