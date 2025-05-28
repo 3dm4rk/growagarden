@@ -43,6 +43,8 @@
             align-items: center;
             padding: 2rem;
             overflow-x: hidden;
+            position: relative;
+            padding-bottom: 100px; /* Space for footer */
         }
         
         h1, h2, h3 {
@@ -94,6 +96,11 @@
         
         #bugEggsBtn {
             background: linear-gradient(45deg, #e74c3c, #ff7675);
+            color: white;
+        }
+        
+        #petsBtn {
+            background: linear-gradient(45deg, #f39c12, #f1c40f);
             color: white;
         }
         
@@ -378,6 +385,141 @@
             z-index: 10;
         }
         
+        /* Pet Collection Styles */
+        .pets-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            width: 100%;
+        }
+        
+        .pet-card {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: visible; /* Changed to visible for tooltip overflow */
+            cursor: pointer;
+        }
+        
+        .pet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.3);
+        }
+        
+        .pet-image {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+        
+        .pet-card:hover .pet-image {
+            transform: scale(1.1);
+        }
+        
+        .pet-name {
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0.3rem;
+        }
+        
+        .pet-rarity {
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+        }
+        
+        .pet-tooltip {
+            position: absolute;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            padding: 0.8rem;
+            border-radius: 8px;
+            width: 200px;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .pet-card:hover .pet-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(-10px);
+        }
+        
+        .pet-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(0,0,0,0.9) transparent transparent transparent;
+        }
+        
+        .pet-tooltip-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+        
+        .pet-tooltip-text {
+            font-size: 0.8rem;
+            line-height: 1.4;
+            margin-bottom: 0.3rem;
+        }
+        
+        /* Footer Styles */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 10;
+        }
+        
+        footer p {
+            margin: 0.3rem 0;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        footer a {
+            color: var(--secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 600;
+        }
+        
+        footer a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        
         /* Scrollbar styling */
         ::-webkit-scrollbar {
             width: 8px;
@@ -399,7 +541,7 @@
         
         /* Responsive adjustments */
         @media (max-width: 768px) {
-            .probabilities {
+            .probabilities, .pets-container {
                 grid-template-columns: 1fr;
             }
             
@@ -416,6 +558,15 @@
                 width: 95%;
                 margin: 20% auto;
             }
+            
+            .pets-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .pet-tooltip {
+                width: 160px;
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
@@ -426,6 +577,7 @@
         <button id="seedsBtn">🌱 Seeds</button>
         <button id="eggsBtn">🥚 Eggs</button>
         <button id="bugEggsBtn">🐞 Bug Eggs</button>
+        <button id="petsBtn">🐾 Pets</button>
     </div>
     
     <div id="seedInfo" class="info-container">
@@ -542,6 +694,15 @@
         </div>
     </div>
     
+    <div id="petInfo" class="info-container">
+        <h2>🐾 Pet Collection</h2>
+        <p>View all your collected pets and their abilities:</p>
+        
+        <div class="pets-container" id="petsCollection">
+            <!-- Pet cards will be added here dynamically -->
+        </div>
+    </div>
+    
     <div id="resultModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -551,6 +712,11 @@
             </div>
         </div>
     </div>
+    
+    <footer>
+        <p>Created with magic by</p>
+        <p><a href="#" target="_blank">Edmark Jay Sumampen</a></p>
+    </footer>
     
     <script>
         // Seed probabilities with updated rarities
@@ -589,13 +755,146 @@
             { name: "Dragonfly", probability: 1, rarity: "divine" }
         ];
         
+        // Pet collection data
+        const petsCollection = [
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/f/f3/GoldenLabPet.png",
+                name: "Golden Lab",
+                rarity: "common",
+                source: "Common Egg",
+                traits: "Every 60 seconds, the Golden Lab will attempt to dig up a random seed (only Seed Shop plants), with a 10% chance to succeed."
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/8/89/Catpet.png",
+                name: "Cat",
+                rarity: "uncommon",
+                source: "Uncommon Egg",
+                traits: "Every 80 seconds, the Cat will nap for 10 seconds. New fruit within 10 studs will be 1.25x larger."
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/9/95/Blood_Hedgehog_Icon.png",
+                name: "Blood Hedgehog",
+                rarity: "legendary",
+                source: "Legendary Egg",
+                traits: "Sanguine Spike - Makes prickly fruits grow bigger, higher prickly fruit variant chance."
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/7/79/Blood_Kiwi_Icon.png",
+                name: "Blood Kiwi",
+                rarity: "legendary",
+                source: "Legendary Egg",
+                traits: "Every 60s, decreases hatch time of egg with the highest remaining hatch time by 45s and increases its hatch speed by 20%."
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/2/25/Polarbear.png",
+                name: "Polar Bear",
+                rarity: "legendary",
+                source: "Legendary Egg",
+                traits: "Every ~90s, ~10% chance to turn a nearby crop chilled or frozen."
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/b/b1/Turtle_icon.png",
+                name: "Turtle",
+                rarity: "legendary",
+                source: "Legendary Egg",
+                traits: "All sprinklers last 20% longer."
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/6/63/Mole.png",
+                name: "Mole",
+                rarity: "legendary",
+                source: "Legendary Egg",
+                traits: "Every ~80 seconds, digs down underground to find treasure. Can dig up gear or sheckles."
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/e/ee/Moon_Cat.png",
+                name: "Moon Cat",
+                rarity: "legendary",
+                source: "Legendary Egg",
+                traits: "Moon Nap: Cat naps in a random spot in your farm, emitting an aura that boosts nearby fruit size. Moon Harvest: Grants chance for Night type plants to replant when harvested."
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/c/c3/Sea_Otter.png",
+                name: "Sea Otter",
+                rarity: "legendary",
+                source: "Legendary Egg",
+                traits: "Every 30 seconds, the Sea Otter sprays water on the nearest plant within at least 15 studs."
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/0/0b/GiantAntIcon.png",
+                name: "Giant Ant",
+                rarity: "mythical",
+                source: "Bug Egg",
+                traits: "~10% chance for harvested crops to duplicate. +~5% chance to duplicate candy type plant. Rarer fruits duplicate less often."
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/8/88/GreyMouse.png",
+                name: "Grey Mouse",
+                rarity: "mythical",
+                source: "Mythical Egg",
+                traits: "Gains 500 bonus experience every 10 minutes. Increases the player's movement speed by 10%."
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/2/25/PrayingMantis.png",
+                name: "Praying Mantis",
+                rarity: "mythical",
+                source: "Bug Egg",
+                traits: "Every 80s, prays for 10.30s granting a 1.51x variant chance to crops within 10.30 studs."
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/d/d5/RedFox.png",
+                name: "Red Fox",
+                rarity: "mythical",
+                source: "Mythical Egg",
+                traits: "Attempts to steal a seed from another user's plot every ~10 minutes."
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/c/c8/RedGiantAntImage.png",
+                name: "Red Giant Ant",
+                rarity: "mythical",
+                source: "Mythical Egg",
+                traits: "5% chance harvested crops duplicate! Rarer crops have lower chance to duplicate. 5% extra chance for Fruit type crops to duplicate!"
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/9/93/Squirrel_Icon.png",
+                name: "Squirrel",
+                rarity: "mythical",
+                source: "Mythical Egg",
+                traits: "Grants a 2.5% chance to keep a seed when planting."
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/0/00/Blood_Owl_Icon.png",
+                name: "Blood Owl",
+                rarity: "divine",
+                source: "Purchasing in Blood Moon Shop",
+                traits: "All active pets gain <0.50 XP per second."
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/7/73/Racoon.png",
+                name: "Raccoon",
+                rarity: "divine",
+                source: "Night Egg",
+                traits: "Every ~15 minutes, duplicates a crop from another players' plot and gives it to you."
+            },
+            {
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/c/c9/DragonflyIcon.png",
+                name: "Dragonfly",
+                rarity: "divine",
+                source: "Bug Egg",
+                traits: "Every ~5 minutes, one random crop will turn gold."
+            }
+        ];
+        
         // DOM elements
         const seedsBtn = document.getElementById('seedsBtn');
         const eggsBtn = document.getElementById('eggsBtn');
         const bugEggsBtn = document.getElementById('bugEggsBtn');
+        const petsBtn = document.getElementById('petsBtn');
         const seedInfo = document.getElementById('seedInfo');
         const eggInfo = document.getElementById('eggInfo');
         const bugEggInfo = document.getElementById('bugEggInfo');
+        const petInfo = document.getElementById('petInfo');
+        const petsCollectionContainer = document.getElementById('petsCollection');
         const drawSeed1xBtn = document.getElementById('drawSeed1xBtn');
         const drawSeed10xBtn = document.getElementById('drawSeed10xBtn');
         const drawEgg1xBtn = document.getElementById('drawEgg1xBtn');
@@ -611,6 +910,7 @@
         seedsBtn.addEventListener('click', () => {
             eggInfo.style.display = 'none';
             bugEggInfo.style.display = 'none';
+            petInfo.style.display = 'none';
             seedInfo.style.display = 'block';
             createParticles(seedsBtn, 10, ['#55efc4', '#00b894']);
         });
@@ -618,6 +918,7 @@
         eggsBtn.addEventListener('click', () => {
             seedInfo.style.display = 'none';
             bugEggInfo.style.display = 'none';
+            petInfo.style.display = 'none';
             eggInfo.style.display = 'block';
             createParticles(eggsBtn, 10, ['#74b9ff', '#0984e3']);
         });
@@ -625,8 +926,18 @@
         bugEggsBtn.addEventListener('click', () => {
             seedInfo.style.display = 'none';
             eggInfo.style.display = 'none';
+            petInfo.style.display = 'none';
             bugEggInfo.style.display = 'block';
             createParticles(bugEggsBtn, 10, ['#ff7675', '#e74c3c']);
+        });
+        
+        petsBtn.addEventListener('click', () => {
+            seedInfo.style.display = 'none';
+            eggInfo.style.display = 'none';
+            bugEggInfo.style.display = 'none';
+            petInfo.style.display = 'block';
+            createParticles(petsBtn, 10, ['#f1c40f', '#f39c12']);
+            displayPetsCollection();
         });
         
         drawSeed1xBtn.addEventListener('click', () => {
@@ -849,10 +1160,60 @@
                 }, animationDuration * 1000);
             }
         }
+        
+        function displayPetsCollection() {
+            petsCollectionContainer.innerHTML = '';
+            
+            petsCollection.forEach(pet => {
+                const petCard = document.createElement('div');
+                petCard.className = 'pet-card';
+                
+                const petImage = document.createElement('img');
+                petImage.className = 'pet-image';
+                petImage.src = pet.imageUrl;
+                petImage.alt = pet.name;
+                petImage.loading = "lazy";
+                
+                // Add error handling for images
+                petImage.onerror = function() {
+                    this.src = 'https://via.placeholder.com/100?text=Pet+Image';
+                };
+                
+                const petName = document.createElement('div');
+                petName.className = `pet-name rarity-${pet.rarity}`;
+                petName.textContent = pet.name;
+                
+                const petRarity = document.createElement('div');
+                petRarity.className = `pet-rarity rarity-${pet.rarity}`;
+                petRarity.textContent = getRarityName(pet.rarity);
+                
+                const petTooltip = document.createElement('div');
+                petTooltip.className = 'pet-tooltip';
+                
+                const tooltipTitle = document.createElement('div');
+                tooltipTitle.className = 'pet-tooltip-title';
+                tooltipTitle.textContent = pet.name;
+                
+                const tooltipSource = document.createElement('div');
+                tooltipSource.className = 'pet-tooltip-text';
+                tooltipSource.innerHTML = `<strong>Source:</strong> ${pet.source}`;
+                
+                const tooltipTraits = document.createElement('div');
+                tooltipTraits.className = 'pet-tooltip-text';
+                tooltipTraits.innerHTML = `<strong>Traits:</strong> ${pet.traits}`;
+                
+                petTooltip.appendChild(tooltipTitle);
+                petTooltip.appendChild(tooltipSource);
+                petTooltip.appendChild(tooltipTraits);
+                
+                petCard.appendChild(petImage);
+                petCard.appendChild(petName);
+                petCard.appendChild(petRarity);
+                petCard.appendChild(petTooltip);
+                
+                petsCollectionContainer.appendChild(petCard);
+            });
+        }
     </script>
 </body>
-    <footer>
-  <p>Created By:</p>
-  <p><a>Edmark Jay Sumampen</a></p>
-</footer>
 </html>
