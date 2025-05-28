@@ -520,6 +520,70 @@
             text-decoration: underline;
         }
         
+        /* Current Stock Styles */
+        .stock-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 800px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .stock-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+            text-align: center;
+        }
+        
+        .stock-eggs {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .egg-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .egg-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .egg-image {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .egg-item:hover .egg-image {
+            transform: scale(1.1);
+        }
+        
+        .egg-name {
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .stock-countdown {
+            text-align: center;
+            font-size: 1rem;
+            color: var(--warning);
+            margin-top: 1rem;
+        }
+        
         /* Scrollbar styling */
         ::-webkit-scrollbar {
             width: 8px;
@@ -567,6 +631,11 @@
                 width: 160px;
                 font-size: 0.8rem;
             }
+            
+            .stock-eggs {
+                flex-direction: column;
+                align-items: center;
+            }
         }
     </style>
 </head>
@@ -578,6 +647,15 @@
         <button id="eggsBtn">🥚 Eggs</button>
         <button id="bugEggsBtn">🐞 Bug Eggs</button>
         <button id="petsBtn">🐾 Pets</button>
+    </div>
+    
+    <!-- Current Stock Section -->
+    <div class="stock-container">
+        <h3 class="stock-title">Current Stock: Pet Eggs</h3>
+        <div class="stock-eggs" id="currentEggs">
+            <!-- Egg items will be added here dynamically -->
+        </div>
+        <div class="stock-countdown" id="countdown">New Pet Eggs in: 40:00</div>
     </div>
     
     <div id="seedInfo" class="info-container">
@@ -885,6 +963,46 @@
             }
         ];
         
+        // Egg types for current stock
+        const eggTypes = [
+            {
+                name: "Common Egg",
+                probability: 99,
+                rarity: "common",
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/5/5d/Common_egg.png"
+            },
+            {
+                name: "Uncommon Egg",
+                probability: 54,
+                rarity: "uncommon",
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/a/a3/Uncommon_egg_no_back.png"
+            },
+            {
+                name: "Rare Egg",
+                probability: 24,
+                rarity: "rare",
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/8/88/Rare_egg.png"
+            },
+            {
+                name: "Legendary Egg",
+                probability: 12,
+                rarity: "legendary",
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/b/b0/Legendary_egg_no_back.png"
+            },
+            {
+                name: "Mythical Egg",
+                probability: 7,
+                rarity: "mythical",
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/f/fd/MythicalEgg2.png"
+            },
+            {
+                name: "Bug Egg",
+                probability: 3,
+                rarity: "mythical",
+                imageUrl: "https://static.wikia.nocookie.net/growagarden/images/8/86/Bugeggimage.png"
+            }
+        ];
+        
         // DOM elements
         const seedsBtn = document.getElementById('seedsBtn');
         const eggsBtn = document.getElementById('eggsBtn');
@@ -905,6 +1023,12 @@
         const modalTitle = document.getElementById('modalTitle');
         const modalResults = document.getElementById('modalResults');
         const closeBtn = document.querySelector('.close');
+        const currentEggsContainer = document.getElementById('currentEggs');
+        const countdownElement = document.getElementById('countdown');
+        
+        // Initialize current eggs and countdown
+        let countdownInterval;
+        let countdownTime = 40 * 60; // 40 minutes in seconds
         
         // Event listeners
         seedsBtn.addEventListener('click', () => {
@@ -1214,6 +1338,74 @@
                 petsCollectionContainer.appendChild(petCard);
             });
         }
+        
+        // Current Stock Functions
+        function generateRandomEggs() {
+            currentEggsContainer.innerHTML = '';
+            
+            for (let i = 0; i < 3; i++) {
+                const egg = drawItem(eggTypes);
+                const eggItem = document.createElement('div');
+                eggItem.className = 'egg-item';
+                
+                const eggImage = document.createElement('img');
+                eggImage.className = 'egg-image';
+                eggImage.src = eggTypes.find(e => e.name === egg.name).imageUrl;
+                eggImage.alt = egg.name;
+                eggImage.loading = "lazy";
+                
+                eggImage.onerror = function() {
+                    this.src = 'https://via.placeholder.com/80?text=Egg+Image';
+                };
+                
+                const eggName = document.createElement('div');
+                eggName.className = `egg-name rarity-${egg.rarity}`;
+                eggName.textContent = egg.name;
+                
+                eggItem.appendChild(eggImage);
+                eggItem.appendChild(eggName);
+                currentEggsContainer.appendChild(eggItem);
+            }
+        }
+        
+        function startCountdown() {
+            // Clear any existing interval
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            // Reset countdown time to 40 minutes
+            countdownTime = 40 * 60;
+            updateCountdownDisplay();
+            
+            // Start new interval
+            countdownInterval = setInterval(() => {
+                countdownTime--;
+                updateCountdownDisplay();
+                
+                if (countdownTime <= 0) {
+                    // Generate new eggs when countdown reaches 0
+                    generateRandomEggs();
+                    // Reset countdown
+                    countdownTime = 40 * 60;
+                }
+            }, 1000);
+        }
+        
+        function updateCountdownDisplay() {
+            const minutes = Math.floor(countdownTime / 60);
+            const seconds = countdownTime % 60;
+            countdownElement.textContent = `New Pet Eggs in: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Initialize the page
+        function init() {
+            generateRandomEggs();
+            startCountdown();
+        }
+        
+        // Start the application
+        init();
     </script>
 </body>
 </html>
