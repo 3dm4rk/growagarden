@@ -1,4 +1,4 @@
-# growagarden-draw
+# growagarden
 draw simulation
 
 https://3dm4rk.github.io/growagarden-draw/
