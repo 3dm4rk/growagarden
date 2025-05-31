@@ -68,6 +68,7 @@
             gap: 20px;
             margin-bottom: 2rem;
             width: 100%;
+            flex-wrap: wrap;
         }
         
         button {
@@ -86,6 +87,11 @@
         
         #seedsBtn {
             background: linear-gradient(45deg, #00b894, #55efc4);
+            color: white;
+        }
+        
+        #seedPackBtn {
+            background: linear-gradient(45deg, #6c5ce7, #a29bfe);
             color: white;
         }
         
@@ -204,12 +210,12 @@
             transition: all 0.3s ease;
         }
         
-        #drawSeed1xBtn, #drawEgg1xBtn, #drawBugEgg1xBtn {
+        #drawSeed1xBtn, #drawEgg1xBtn, #drawBugEgg1xBtn, #drawSeedPack1xBtn {
             background: linear-gradient(45deg, var(--primary), var(--secondary));
             color: white;
         }
         
-        #drawSeed10xBtn, #drawEgg10xBtn, #drawBugEgg10xBtn {
+        #drawSeed10xBtn, #drawEgg10xBtn, #drawBugEgg10xBtn, #drawSeedPack10xBtn {
             background: linear-gradient(45deg, var(--warning), #e17055);
             color: var(--dark);
         }
@@ -302,6 +308,25 @@
             transition: transform 0.3s ease;
             position: relative;
             overflow: hidden;
+        }
+        
+        .result-item-with-image {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .result-image {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-right: 1rem;
+            border-radius: 8px;
+        }
+        
+        .result-content {
+            display: flex;
+            align-items: center;
+            width: 100%;
         }
         
         @keyframes slideIn {
@@ -636,6 +661,16 @@
                 flex-direction: column;
                 align-items: center;
             }
+            
+            .result-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .result-image {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
         }
     </style>
 </head>
@@ -644,6 +679,7 @@
     
     <div class="button-container">
         <button id="seedsBtn">🌱 Seeds</button>
+        <button id="seedPackBtn">🌙 Seed Pack</button>
         <button id="eggsBtn">🥚 Eggs</button>
         <button id="bugEggsBtn">🐞 Bug Eggs</button>
         <button id="petsBtn">🐾 Pets</button>
@@ -659,7 +695,7 @@
     </div>
     
     <div id="seedInfo" class="info-container">
-        <h2>🌙 Seed Pack!</h2>
+        <h2>🌱 Seed Pack!</h2>
         <p>Discover magical plants with different rarities:</p>
         
         <div class="probabilities">
@@ -699,6 +735,47 @@
         <div class="draw-buttons">
             <button id="drawSeed1xBtn" class="draw-btn">Draw 1x</button>
             <button id="drawSeed10xBtn" class="draw-btn">Draw 10x</button>
+        </div>
+    </div>
+    
+    <div id="seedPackInfo" class="info-container">
+        <h2>🌙 Seed Pack!</h2>
+        <p>Discover magical night plants with different rarities:</p>
+        
+        <div class="probabilities">
+            <div class="probability-item rarity-common">
+                <span class="probability-name">Nightshade</span>
+                <span class="probability-value">40%</span>
+            </div>
+            <div class="probability-item rarity-rare">
+                <span class="probability-name">Glowshroom</span>
+                <span class="probability-value">20%</span>
+            </div>
+            <div class="probability-item rarity-rare">
+                <span class="probability-name">Mint</span>
+                <span class="probability-value">15%</span>
+            </div>
+            <div class="probability-item rarity-legendary">
+                <span class="probability-name">Moonflower</span>
+                <span class="probability-value">10%</span>
+            </div>
+            <div class="probability-item rarity-legendary">
+                <span class="probability-name">Starfruit</span>
+                <span class="probability-value">9.5%</span>
+            </div>
+            <div class="probability-item rarity-mythical">
+                <span class="probability-name">Moonglow</span>
+                <span class="probability-value">5.0%</span>
+            </div>
+            <div class="probability-item rarity-divine">
+                <span class="probability-name">Moon Blossom</span>
+                <span class="probability-value">0.5%</span>
+            </div>
+        </div>
+        
+        <div class="draw-buttons">
+            <button id="drawSeedPack1xBtn" class="draw-btn">Draw 1x</button>
+            <button id="drawSeedPack10xBtn" class="draw-btn">Draw 10x</button>
         </div>
     </div>
     
@@ -812,6 +889,17 @@
             
             // Divine
             { name: "Moon Blossom", probability: 2.5, rarity: "divine", limited: true }
+        ];
+        
+        // Seed Pack probabilities
+        const seedPackProbabilities = [
+            { name: "Nightshade", probability: 40, rarity: "common", imageUrl: "https://growagarden.fandom.com/wiki/Nightshade?file=Flower.png" },
+            { name: "Glowshroom", probability: 20, rarity: "rare", imageUrl: "https://growagarden.fandom.com/wiki/Glowshroom?file=GlowShroomFruit.png" },
+            { name: "Mint", probability: 15, rarity: "rare", imageUrl: "https://growagarden.fandom.com/wiki/Mint?file=MintFruit.png" },
+            { name: "Moonflower", probability: 10, rarity: "legendary", imageUrl: "https://growagarden.fandom.com/wiki/Moonflower?file=MoonFlowerCropsIcon.png" },
+            { name: "Starfruit", probability: 9.5, rarity: "legendary", imageUrl: "https://growagarden.fandom.com/wiki/Starfruit?file=StarFruitFruit.png" },
+            { name: "Moonglow", probability: 5.0, rarity: "mythical", imageUrl: "https://growagarden.fandom.com/wiki/Moonglow?file=MoonglowProduce.png" },
+            { name: "Moon Blossom", probability: 0.5, rarity: "divine", imageUrl: "https://growagarden.fandom.com/wiki/Moon_Blossom?file=MoonBlossomFruit.png" }
         ];
         
         // Egg probabilities with updated rarities
@@ -1005,16 +1093,20 @@
         
         // DOM elements
         const seedsBtn = document.getElementById('seedsBtn');
+        const seedPackBtn = document.getElementById('seedPackBtn');
         const eggsBtn = document.getElementById('eggsBtn');
         const bugEggsBtn = document.getElementById('bugEggsBtn');
         const petsBtn = document.getElementById('petsBtn');
         const seedInfo = document.getElementById('seedInfo');
+        const seedPackInfo = document.getElementById('seedPackInfo');
         const eggInfo = document.getElementById('eggInfo');
         const bugEggInfo = document.getElementById('bugEggInfo');
         const petInfo = document.getElementById('petInfo');
         const petsCollectionContainer = document.getElementById('petsCollection');
         const drawSeed1xBtn = document.getElementById('drawSeed1xBtn');
         const drawSeed10xBtn = document.getElementById('drawSeed10xBtn');
+        const drawSeedPack1xBtn = document.getElementById('drawSeedPack1xBtn');
+        const drawSeedPack10xBtn = document.getElementById('drawSeedPack10xBtn');
         const drawEgg1xBtn = document.getElementById('drawEgg1xBtn');
         const drawEgg10xBtn = document.getElementById('drawEgg10xBtn');
         const drawBugEgg1xBtn = document.getElementById('drawBugEgg1xBtn');
@@ -1032,6 +1124,7 @@
         
         // Event listeners
         seedsBtn.addEventListener('click', () => {
+            seedPackInfo.style.display = 'none';
             eggInfo.style.display = 'none';
             bugEggInfo.style.display = 'none';
             petInfo.style.display = 'none';
@@ -1039,8 +1132,18 @@
             createParticles(seedsBtn, 10, ['#55efc4', '#00b894']);
         });
         
+        seedPackBtn.addEventListener('click', () => {
+            seedInfo.style.display = 'none';
+            eggInfo.style.display = 'none';
+            bugEggInfo.style.display = 'none';
+            petInfo.style.display = 'none';
+            seedPackInfo.style.display = 'block';
+            createParticles(seedPackBtn, 10, ['#a29bfe', '#6c5ce7']);
+        });
+        
         eggsBtn.addEventListener('click', () => {
             seedInfo.style.display = 'none';
+            seedPackInfo.style.display = 'none';
             bugEggInfo.style.display = 'none';
             petInfo.style.display = 'none';
             eggInfo.style.display = 'block';
@@ -1049,6 +1152,7 @@
         
         bugEggsBtn.addEventListener('click', () => {
             seedInfo.style.display = 'none';
+            seedPackInfo.style.display = 'none';
             eggInfo.style.display = 'none';
             petInfo.style.display = 'none';
             bugEggInfo.style.display = 'block';
@@ -1057,6 +1161,7 @@
         
         petsBtn.addEventListener('click', () => {
             seedInfo.style.display = 'none';
+            seedPackInfo.style.display = 'none';
             eggInfo.style.display = 'none';
             bugEggInfo.style.display = 'none';
             petInfo.style.display = 'block';
@@ -1080,6 +1185,25 @@
                     results.push(drawItem(seedProbabilities));
                 }
                 showResults(results, "Results of 10x Seed Draw");
+            }, 500);
+        });
+        
+        drawSeedPack1xBtn.addEventListener('click', () => {
+            createParticles(drawSeedPack1xBtn, 15, ['#6C5CE7', '#00CEFF']);
+            setTimeout(() => {
+                const result = drawItem(seedPackProbabilities);
+                showResults([result], "Result of 1x Seed Pack Draw", true);
+            }, 300);
+        });
+        
+        drawSeedPack10xBtn.addEventListener('click', () => {
+            createParticles(drawSeedPack10xBtn, 30, ['#FDCB6E', '#e17055']);
+            setTimeout(() => {
+                const results = [];
+                for (let i = 0; i < 10; i++) {
+                    results.push(drawItem(seedPackProbabilities));
+                }
+                showResults(results, "Results of 10x Seed Pack Draw", true);
             }, 500);
         });
         
@@ -1142,7 +1266,8 @@
                     return {
                         name: item.name,
                         rarity: item.rarity,
-                        limited: item.limited || false
+                        limited: item.limited || false,
+                        imageUrl: item.imageUrl || null
                     };
                 }
             }
@@ -1150,7 +1275,7 @@
             return probabilityArray[probabilityArray.length - 1];
         }
         
-        function showResults(results, title) {
+        function showResults(results, title, showImages = false) {
             modalTitle.textContent = title;
             modalResults.innerHTML = '';
             
@@ -1171,7 +1296,24 @@
             results.forEach((result, index) => {
                 setTimeout(() => {
                     const resultElement = document.createElement('div');
-                    resultElement.className = `result-item rarity-${result.rarity}`;
+                    resultElement.className = `result-item ${showImages ? 'result-item-with-image' : ''} rarity-${result.rarity}`;
+                    
+                    const resultContent = document.createElement('div');
+                    resultContent.className = 'result-content';
+                    
+                    if (showImages && result.imageUrl) {
+                        const imageElement = document.createElement('img');
+                        imageElement.className = 'result-image';
+                        imageElement.src = result.imageUrl;
+                        imageElement.alt = result.name;
+                        imageElement.loading = "lazy";
+                        imageElement.onerror = function() {
+                            this.src = 'https://via.placeholder.com/80?text=Seed+Image';
+                        };
+                        resultContent.appendChild(imageElement);
+                    }
+                    
+                    const textContainer = document.createElement('div');
                     
                     const nameElement = document.createElement('span');
                     nameElement.innerHTML = `✨ You Got <strong>${result.name}</strong>`;
@@ -1187,8 +1329,12 @@
                         rarityElement.appendChild(limitedElement);
                     }
                     
-                    resultElement.appendChild(nameElement);
-                    resultElement.appendChild(rarityElement);
+                    textContainer.appendChild(nameElement);
+                    textContainer.appendChild(document.createElement('br'));
+                    textContainer.appendChild(rarityElement);
+                    
+                    resultContent.appendChild(textContainer);
+                    resultElement.appendChild(resultContent);
                     modalResults.appendChild(resultElement);
                     
                     // Add particle effect for rare+ items
