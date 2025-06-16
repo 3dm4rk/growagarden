@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jonas - Grow a Garden Champion</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Poppins:wght@400;700&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #6eccaf, #3a7bd5);
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+        
+        .container {
+            text-align: center;
+            position: relative;
+        }
+        
+        .champion-text {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 5rem;
+            color: #fff;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            margin: 0;
+            opacity: 0;
+            transform: translateY(50px) rotateX(90deg);
+            animation: textEntrance 1.5s forwards 0.5s;
+            position: relative;
+            display: inline-block;
+        }
+        
+        @keyframes textEntrance {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) rotateX(90deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+        
+        .champion-name {
+            color: #f9e300;
+            text-shadow: 0 0 10px #ff8c00, 0 0 20px #ff8c00;
+            display: inline-block;
+            animation: nameGlow 2s infinite alternate;
+        }
+        
+        @keyframes nameGlow {
+            0% {
+                text-shadow: 0 0 10px #ff8c00, 0 0 20px #ff8c00;
+            }
+            100% {
+                text-shadow: 0 0 15px #ff8c00, 0 0 30px #ff8c00, 0 0 45px #ff8c00;
+            }
+        }
+        
+        .garden-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+        
+        .flower {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0;
+            animation: flowerGrow 2s forwards;
+        }
+        
+        @keyframes flowerGrow {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: #f00;
+            opacity: 0;
+            animation: confettiFall 3s linear forwards;
+        }
+        
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(500px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .trophy {
+            font-size: 8rem;
+            margin: 20px 0;
+            display: inline-block;
+            opacity: 0;
+            transform: scale(0);
+            animation: trophyAppear 1s forwards 1.5s;
+        }
+        
+        @keyframes trophyAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            80% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .subtext {
+            color: white;
+            font-size: 1.5rem;
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeIn 1s forwards 2s;
+        }
+        
+        .date-badge {
+            background-color: rgba(255,255,255,0.2);
+            border: 3px solid white;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-size: 1.8rem;
+            color: white;
+            display: inline-block;
+            margin-top: 30px;
+            opacity: 0;
+            transform: scale(0);
+            animation: dateAppear 1s forwards 2.5s;
+            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes dateAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            70% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .date-badge::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 45%,
+                rgba(255,255,255,0.3) 50%,
+                transparent 55%
+            );
+            animation: shine 3s infinite 3s;
+        }
+        
+        @keyframes shine {
+            0% {
+                transform: translate(-30%, -30%) rotate(30deg);
+            }
+            100% {
+                transform: translate(30%, 30%) rotate(30deg);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="garden-elements" id="garden"></div>
+        <div class="trophy">🏆</div>
+        <h1 class="champion-text">
+            Congratulations <span class="champion-name">Jonas</span>,<br>
+            Grow a Garden Champion!
+        </h1>
+        <p class="subtext">The ultimate green thumb of Roblox!</p>
+        <div class="date-badge">Champion since: 6/15/25</div>
+    </div>
+
+    <script>
+        // Create flowers
+        const garden = document.getElementById('garden');
+        const flowerColors = ['🌻', '🌹', '🌼', '🌸', '🌺', '🌷'];
+        
+        for (let i = 0; i < 20; i++) {
+            const flower = document.createElement('div');
+            flower.className = 'flower';
+            flower.textContent = flowerColors[Math.floor(Math.random() * flowerColors.length)];
+            flower.style.left = `${Math.random() * 100}%`;
+            flower.style.top = `${60 + Math.random() * 30}%`;
+            flower.style.animationDelay = `${1 + Math.random() * 2}s`;
+            garden.appendChild(flower);
+        }
+        
+        // Create confetti
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = `${Math.random() * 100}%`;
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            confetti.style.animationDelay = `${Math.random() * 2}s`;
+            garden.appendChild(confetti);
+        }
+        
+        // Add floating animation to text
+        const championText = document.querySelector('.champion-text');
+        setInterval(() => {
+            championText.style.transform = `translateY(${Math.sin(Date.now() / 500) * 5}px)`;
+        }, 50);
+    </script>
+</body>
+</html>
