@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grow a Garden Prize Draw</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Bangers&display=swap');
+        
+        :root {
+            --primary: #6eccaf;
+            --secondary: #3a7bd5;
+            --accent: #ff8c00;
+            --rare: gold;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Luckiest Guy', cursive;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 4rem;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #f9e300, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            animation: titleGlow 2s infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 10px rgba(249,227,0,0.5); }
+            100% { text-shadow: 0 0 20px rgba(255,140,0,0.8); }
+        }
+        
+        .draw-container {
+            width: 90%;
+            max-width: 900px;
+            height: 350px;
+            position: relative;
+            overflow: hidden;
+            margin: 20px 0;
+            border-radius: 20px;
+            background-color: rgba(0,0,0,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 3px solid rgba(255,255,255,0.1);
+        }
+        
+        .prize-track {
+            display: flex;
+            position: absolute;
+            height: 100%;
+            left: 0;
+            transition: none;
+        }
+        
+        .prize-item {
+            min-width: 250px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0 30px;
+            box-sizing: border-box;
+            font-size: 2.5rem;
+            border-right: 2px dashed rgba(255,255,255,0.2);
+        }
+        
+        .prize-item img {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+        }
+        
+        .prize-name {
+            font-size: 2rem;
+            margin-top: 10px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            background: linear-gradient(to right, #fff, #f9e300);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .draw-button {
+            background: linear-gradient(to right, var(--accent), #ff5e00);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Luckiest Guy', cursive;
+            margin-top: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            z-index: 1;
+        }
+        
+        .draw-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        }
+        
+        .draw-button:active {
+            transform: translateY(2px);
+        }
+        
+        .draw-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .draw-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,0.3),
+                transparent
+            );
+            transition: 0.5s;
+            z-index: -1;
+        }
+        
+        .draw-button:hover::before {
+            left: 100%;
+        }
+        
+        .result {
+            font-size: 2.5rem;
+            margin-top: 30px;
+            min-height: 80px;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: linear-gradient(to right, #fff, #f9e300);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .result.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .probability {
+            font-size: 1.2rem;
+            margin-top: 5px;
+            color: rgba(255,255,255,0.8);
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+        }
+        
+        .highlight {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            height: 100%;
+            border: 5px solid var(--rare);
+            border-radius: 15px;
+            box-sizing: border-box;
+            pointer-events: none;
+            box-shadow: 0 0 40px var(--rare);
+            z-index: 2;
+        }
+        
+        .highlight::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: var(--rare);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <h1>GROW A GARDEN PRIZE DRAW</h1>
+    
+    <div class="draw-container">
+        <div class="highlight"></div>
+        <div class="prize-track" id="prizeTrack"></div>
+    </div>
+    
+    <button class="draw-button" id="drawButton">START DRAW</button>
+    
+    <div class="result" id="result"></div>
+
+    <script>
+        // Prize data with probabilities
+        const prizes = [
+            { 
+                name: "Dragon Fly", 
+                emoji: "🦟", 
+                probability: 20, 
+                image: "https://static.wikia.nocookie.net/growagarden/images/c/c9/DragonflyIcon.png" 
+            },
+            { 
+                name: "Queen Bee", 
+                emoji: "🐝", 
+                probability: 90, 
+                image: "https://static.wikia.nocookie.net/growagarden/images/7/7a/Queen_bee.png" 
+            },
+            { 
+                name: "Racoon", 
+                emoji: "🦝", 
+                probability: 0.5, 
+                image: "https://static.wikia.nocookie.net/growagarden/images/5/54/Raccon_Better_Quality.png" 
+            },
+            { 
+                name: "150 Robux", 
+                emoji: "💎", 
+                probability: 0.1, 
+                image: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Robux_2019_Logo_gold.svg" 
+            },
+            { 
+                name: "150 Peos Cash", 
+                emoji: "💰", 
+                probability: 0.1, 
+                image: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Robux_2019_Logo_gold.svg" 
+            }
+        ];
+        
+        const prizeTrack = document.getElementById('prizeTrack');
+        const drawButton = document.getElementById('drawButton');
+        const result = document.getElementById('result');
+        let selectedPrize = null;
+        
+        // Create prize items (repeated to make the carousel effect)
+        function createPrizeItems() {
+            prizeTrack.innerHTML = '';
+            // Create 5 sets of prizes to make the carousel seamless
+            for (let set = 0; set < 5; set++) {
+                prizes.forEach(prize => {
+                    const prizeItem = document.createElement('div');
+                    prizeItem.className = 'prize-item';
+                    
+                    const img = document.createElement('img');
+                    img.src = prize.image;
+                    img.alt = prize.name;
+                    img.onerror = () => { img.src = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><text x='50%' y='50%' font-size='60' text-anchor='middle' dominant-baseline='middle'>${prize.emoji}</text></svg>`; };
+                    
+                    const name = document.createElement('div');
+                    name.className = 'prize-name';
+                    name.textContent = prize.name;
+                    
+                    const prob = document.createElement('div');
+                    prob.className = 'probability';
+                    prob.textContent = `${prize.probability}% chance`;
+                    
+                    prizeItem.appendChild(img);
+                    prizeItem.appendChild(name);
+                    prizeItem.appendChild(prob);
+                    
+                    prizeTrack.appendChild(prizeItem);
+                });
+            }
+        }
+        
+        createPrizeItems();
+        
+        // Select a random prize based on probabilities
+        function selectPrize() {
+            const total = prizes.reduce((sum, prize) => sum + prize.probability, 0);
+            let random = Math.random() * total;
+            
+            for (const prize of prizes) {
+                if (random < prize.probability) {
+                    return prize;
+                }
+                random -= prize.probability;
+            }
+            
+            return prizes[0]; // fallback
+        }
+        
+        // Create confetti effect
+        function createConfetti() {
+            const container = document.querySelector('.draw-container');
+            
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.animation = `confettiFall ${1 + Math.random() * 2}s linear forwards`;
+                confetti.style.width = `${Math.random() * 10 + 5}px`;
+                confetti.style.height = confetti.style.width;
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                container.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 3000);
+            }
+        }
+        
+        // Animate the prize track (3 seconds total)
+        function animateDraw() {
+            const prizeWidth = 250; // width of each prize item
+            const prizeIndex = prizes.findIndex(p => p.name === selectedPrize.name);
+            
+            // Calculate target position to land exactly on the selected prize in the middle section
+            const targetPosition = -((prizes.length * 2) + prizeIndex) * prizeWidth;
+            
+            // Initial fast spin
+            let startTime = null;
+            const duration = 3000; // 3 seconds
+            
+            const animation = (timestamp) => {
+                if (!startTime) startTime = timestamp;
+                const elapsed = timestamp - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Custom easing function for realistic spinning
+                let easeProgress;
+                if (progress < 0.7) {
+                    // Fast spinning at the beginning
+                    easeProgress = progress * 1.5;
+                } else {
+                    // Slow down at the end
+                    easeProgress = 0.7 * 1.5 + (progress - 0.7) * 0.5;
+                }
+                
+                // Calculate current position
+                const currentPosition = easeProgress * targetPosition;
+                
+                prizeTrack.style.transform = `translateX(${currentPosition}px)`;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animation);
+                } else {
+                    // Reached target
+                    prizeTrack.style.transform = `translateX(${targetPosition}px)`;
+                    
+                    // Show result with confetti
+                    result.textContent = `You won: ${selectedPrize.name} ${selectedPrize.emoji}!`;
+                    result.classList.add('show');
+                    
+                    if (selectedPrize.probability <= 1) {
+                        createConfetti();
+                    }
+                    
+                    drawButton.disabled = false;
+                    drawButton.textContent = "TRY AGAIN";
+                }
+            };
+            
+            requestAnimationFrame(animation);
+        }
+        
+        // Start the draw
+        drawButton.addEventListener('click', () => {
+            result.classList.remove('show');
+            drawButton.disabled = true;
+            drawButton.textContent = "DRAWING...";
+            
+            // Reset track position
+            prizeTrack.style.transition = 'none';
+            prizeTrack.style.transform = 'translateX(0)';
+            
+            // Select prize first to know where to stop
+            selectedPrize = selectPrize();
+            console.log("Selected prize:", selectedPrize.name); // For debugging
+            
+            // Animate after a short delay
+            setTimeout(() => {
+                animateDraw();
+            }, 50);
+        });
+        
+        // CSS for confetti animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes confettiFall {
+                0% {
+                    transform: translateY(-100px) rotate(0deg) scale(${Math.random() * 0.5 + 0.5});
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(500px) rotate(${Math.random() * 360}deg) scale(${Math.random() * 0.5 + 0.5});
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
