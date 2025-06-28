@@ -368,7 +368,7 @@
                 <div id="minutes">00<br>Minutes</div>
                 <div id="seconds">00<br>Seconds</div>
             </div>
-            <p>Tournament Coming Soon: June 14, 2025, 12:00 PM!</p>
+            <p>Tournament Coming Soon: July 12, 2025, 12:00 PM!</p>
         </header>
 
         <section>
@@ -393,16 +393,16 @@
         <section>
             <h2>Confirmed Players</h2>
             <ul>
-                <li>Sean</li>
-                <li>Jonas</li>
-                <li>Jan2x</li>
-                <li>Binsoy</li>
-                <li>Dodong-inc</li>
-                <li>Dodong-bilaan</li>
-                <li>Bunsoy</li>
-                <li>Carl</li>
-                <li>Kero</li>
-                <li>Vince</li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
             </ul>
         </section>
 
@@ -479,7 +479,7 @@
 
     <script>
         // Countdown Timer
-        const targetDate = new Date('June 14, 2025 12:00:00 UTC').getTime();
+        const targetDate = new Date('July 12, 2025 12:00:00 UTC').getTime();
 
         function updateCountdown() {
             const now = new Date().getTime();
@@ -506,21 +506,21 @@
 
         // Spin Wheel
         const freePrizes = [
-            { name: "500 Robux", image: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Robux_2019_Logo_gold.svg", weight: 0.01 },
-            { name: "Dragon Fly", image: "https://static.wikia.nocookie.net/growagarden/images/c/c9/DragonflyIcon.png", weight: 0.1 },
-            { name: "Raccoon", image: "https://static.wikia.nocookie.net/growagarden/images/5/54/Raccon_Better_Quality.png", weight: 0.1 },
-            { name: "Random Egg", image: "https://static.wikia.nocookie.net/growagarden/images/e/e2/AntiBeeEgg.png", weight: 0.1 },
-            { name: "Random Huge Pet", image: "https://static.wikia.nocookie.net/growagarden/images/2/29/DogPet.png", weight: 0.3 },
-            { name: "5 Pesos Coins", image: "https://i.pinimg.com/736x/51/db/c4/51dbc46d2e79eb58cc0d1a8d5205a30b.jpg", weight: 80 },
+            { name: "500 Robux", image: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Robux_2019_Logo_gold.svg", weight: 0 },
+            { name: "Dragon Fly", image: "https://static.wikia.nocookie.net/growagarden/images/c/c9/DragonflyIcon.png", weight: 0 },
+            { name: "Raccoon", image: "https://static.wikia.nocookie.net/growagarden/images/5/54/Raccon_Better_Quality.png", weight: 0 },
+            { name: "Random Egg", image: "https://static.wikia.nocookie.net/growagarden/images/e/e2/AntiBeeEgg.png", weight: 0 },
+            { name: "Random Huge Pet", image: "https://static.wikia.nocookie.net/growagarden/images/2/29/DogPet.png", weight: 50 },
+            { name: "5 Pesos Coins", image: "https://i.pinimg.com/736x/51/db/c4/51dbc46d2e79eb58cc0d1a8d5205a30b.jpg", weight: 10 },
             { name: "No Prize", image: "https://via.placeholder.com/40", weight: 17.79 }
         ];
 
         const premiumPrizes = [
-            { name: "500 Robux", image: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Robux_2019_Logo_gold.svg", weight: 0.0 },
-            { name: "Dragon Fly", image: "https://static.wikia.nocookie.net/growagarden/images/c/c9/DragonflyIcon.png", weight: 95 },
-            { name: "Raccoon", image: "https://static.wikia.nocookie.net/growagarden/images/5/54/Raccon_Better_Quality.png", weight: 0.0 },
-            { name: "Random Giftable Egg", image: "https://static.wikia.nocookie.net/growagarden/images/e/e2/AntiBeeEgg.png", weight: 0.1 },
-            { name: "150 Pesos", image: "https://i.pinimg.com/736x/51/db/c4/51dbc46d2e79eb58cc0d1a8d5205a30b.jpg", weight: 0.5 }
+            { name: "500 Robux", image: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Robux_2019_Logo_gold.svg", weight: 50 },
+            { name: "Dragon Fly", image: "https://static.wikia.nocookie.net/growagarden/images/c/c9/DragonflyIcon.png", weight: 50 },
+            { name: "Raccoon", image: "https://static.wikia.nocookie.net/growagarden/images/5/54/Raccon_Better_Quality.png", weight: 50 },
+            { name: "Random Giftable Egg", image: "https://static.wikia.nocookie.net/growagarden/images/e/e2/AntiBeeEgg.png", weight: 50 },
+            { name: "150 Pesos", image: "https://i.pinimg.com/736x/51/db/c4/51dbc46d2e79eb58cc0d1a8d5205a30b.jpg", weight: 50 }
         ];
 
         const wheel = document.getElementById('wheel');
